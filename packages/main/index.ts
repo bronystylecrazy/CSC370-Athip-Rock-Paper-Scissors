@@ -24,7 +24,30 @@ async function createWindow() {
       preload: join(__dirname, "../preload/index.cjs"),
     },
   });
+  console.log(
+    "Main-process message sent",
+    join(process.cwd(), "yolov5", "detect.py")
+  );
+  const ls = spawn("npm", [
+    "run",
+    "sidecar"
+  ]);
 
+  ls.stdout.on("data", (data) => {
+    // console.log(`stdout: ${data}`);
+    // console.log(parseData(data.toString()));
+    win?.webContents.send("sidecar", `${data}`);
+    console.log(data.toString());
+  });
+
+  ls.stderr.on("data", (data) => {
+    win?.webContents.send("sidecar", `${data}`);
+    console.log(`ERROR:`, data.toString())
+  });
+
+  ls.on("close", (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
   if (app.isPackaged) {
     win.loadFile(join(__dirname, "../renderer/index.html"));
   } else {
@@ -37,32 +60,7 @@ async function createWindow() {
 
   // Test active push message to Renderer-process
   win.webContents.on("did-finish-load", () => {
-    win?.webContents.send("main-process-message", new Date().toLocaleString());
-    // console.log(
-    //   "Main-process message sent",
-    //   join(process.cwd(), "yolov5", "detect.py")
-    // );
-    // const ls = spawn("python", [
-    //   join(process.cwd(), "yolov5", "detect.py"),
-    //   "--source",
-    //   "0",
-    //   "--weight",
-    //   join(process.cwd(), "yolov5", "best.pt"),
-    // ]);
 
-    // ls.stdout.on("data", (data) => {
-    //   // console.log(`stdout: ${data}`);
-    //   // console.log(parseData(data.toString()));
-    //   win?.webContents.send("sidecar", `${data}`);
-    // });
-
-    // ls.stderr.on("data", (data) => {
-    //   win?.webContents.send("sidecar", `${data}`);
-    // });
-
-    // ls.on("close", (code) => {
-    //   console.log(`child process exited with code ${code}`);
-    // });
   });
 
   // Make all links open with the browser, not with the application

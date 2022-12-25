@@ -11,12 +11,13 @@
     "dev": "node scripts/watch.mjs",
     "build": "npm run typecheck && node scripts/build.mjs && electron-builder --config .electron-builder.config.js",
     "typecheck": "tsc --noEmit --project packages/renderer/tsconfig.json",
-    "sidecar": "cd yolov5 && python detect.py --weight best.pt --source 0"
+    "sidecar": "cd yolov5 && python3 detect.py --weight best.pt --source 0"
   },
   "engines": {
     "node": ">=14.17.0"
   },
   "dependencies": {
+    "@solid-primitives/scheduled": "^1.2.0",
     "@suid/icons-material": "^0.5.1",
     "@suid/material": "^0.8.0",
     "electron-store": "^8.0.1",

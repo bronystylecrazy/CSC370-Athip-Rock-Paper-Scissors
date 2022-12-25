@@ -6,6 +6,7 @@ import { onMount } from "solid-js";
 import { render } from "solid-js/web";
 import { Router, createIntegration } from "solid-app-router";
 import App from "./app";
+import './style.css';
 
 function bindEvent(target: EventTarget, type: string, handler: EventListener) {
   target.addEventListener(type, handler);
